@@ -1,18 +1,7 @@
-//
-//  T.hpp
-//  AutoDiff3
-//
-//  Created by Adam Alcolado on 2018-08-07.
-//  Copyright © 2018 Adam. All rights reserved.
-//
-
 #ifndef T_hpp
 #define T_hpp
 
-#include <iostream>
-#include <stdio.h>
 #include <Eigen/Dense>
-
 
 struct T
 {
@@ -45,4 +34,4 @@ struct T
     ArrayType m_value;
 };
 
-#endif /* T_hpp */
+#endif

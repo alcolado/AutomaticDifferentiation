@@ -1,11 +1,3 @@
-//
-//  Node.cpp
-//  AutoDiff3
-//
-//  Created by Adam Alcolado on 2018-07-29.
-//  Copyright © 2018 Adam. All rights reserved.
-//
-
 #include "Node.hpp"
 
 
@@ -37,7 +29,7 @@ void NodeBase::Forward()
         m_value = ComputeValue();
     
     m_visits_forward++;
-    printf("Forward : %d, %s \n", m_visits_forward, GetName());
+    NodeDebug(printf("Forward : %d, %s \n", m_visits_forward, GetName()));
 }
 
 void NodeBase::Reverse()
@@ -50,7 +42,7 @@ void NodeBase::Reverse()
 
         node->SetGrad(node->GetGrad().Add(this->ComputeGradAtInput(i)));
         node->m_visits_reverse++;
-        printf("Reverse : %d, %s\n", node->m_visits_reverse, node->GetName());
+        NodeDebug(printf("Reverse : %d, %s\n", node->m_visits_reverse, node->GetName()));
         
         if (node->m_visits_reverse == node->m_visits_forward)
         {

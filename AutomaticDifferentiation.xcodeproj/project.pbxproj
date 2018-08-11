@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		66742CA1211A1EEB0046CD05 /* T.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 66742C9F211A1EEB0046CD05 /* T.cpp */; };
+		66A50136211F7EA9005022EA /* Tests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 66A50134211F7EA9005022EA /* Tests.cpp */; };
 		66C674DB210E189100E7B0B8 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 66C674DA210E189100E7B0B8 /* main.cpp */; };
 		66C674E3210E18DF00E7B0B8 /* Node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 66C674E1210E18DF00E7B0B8 /* Node.cpp */; };
 /* End PBXBuildFile section */
@@ -27,6 +28,8 @@
 /* Begin PBXFileReference section */
 		66742C9F211A1EEB0046CD05 /* T.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = T.cpp; sourceTree = "<group>"; };
 		66742CA0211A1EEB0046CD05 /* T.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = T.hpp; sourceTree = "<group>"; };
+		66A50134211F7EA9005022EA /* Tests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Tests.cpp; sourceTree = "<group>"; };
+		66A50135211F7EA9005022EA /* Tests.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Tests.hpp; sourceTree = "<group>"; };
 		66C674D7210E189100E7B0B8 /* AutomaticDifferentiation */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = AutomaticDifferentiation; sourceTree = BUILT_PRODUCTS_DIR; };
 		66C674DA210E189100E7B0B8 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		66C674E1210E18DF00E7B0B8 /* Node.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Node.cpp; sourceTree = "<group>"; };
@@ -68,6 +71,8 @@
 				66C674E2210E18DF00E7B0B8 /* Node.hpp */,
 				66742C9F211A1EEB0046CD05 /* T.cpp */,
 				66742CA0211A1EEB0046CD05 /* T.hpp */,
+				66A50134211F7EA9005022EA /* Tests.cpp */,
+				66A50135211F7EA9005022EA /* Tests.hpp */,
 			);
 			path = AutomaticDifferentiation;
 			sourceTree = "<group>";
@@ -129,6 +134,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				66742CA1211A1EEB0046CD05 /* T.cpp in Sources */,
+				66A50136211F7EA9005022EA /* Tests.cpp in Sources */,
 				66C674DB210E189100E7B0B8 /* main.cpp in Sources */,
 				66C674E3210E18DF00E7B0B8 /* Node.cpp in Sources */,
 			);

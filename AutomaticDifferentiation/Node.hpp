@@ -1,13 +1,14 @@
-//
-//  Node.hpp
-//  AutoDiff3
-//
-//  Created by Adam Alcolado on 2018-07-29.
-//  Copyright © 2018 Adam. All rights reserved.
-//
-
 #ifndef Node_hpp
 #define Node_hpp
+
+#define NODE_DEBUG_LEVEL 1
+#if NODE_DEBUG_LEVEL > 0
+#define NodeDebug(x) x
+#else
+#define NodeDebug(x)
+#endif
+
+
 
 #include <stdio.h>
 #include <iostream>
@@ -107,4 +108,4 @@ public:
 };
 
 
-#endif /* Node_hpp */
+#endif 

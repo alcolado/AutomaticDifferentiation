@@ -1,14 +1,4 @@
-//
-//  T.cpp
-//  AutoDiff3
-//
-//  Created by Adam Alcolado on 2018-08-07.
-//  Copyright © 2018 Adam. All rights reserved.
-//
-
 #include "T.hpp"
-
-/* T */
 
 T::T() 
 {

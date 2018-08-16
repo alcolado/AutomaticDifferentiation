@@ -110,28 +110,36 @@ void TestAutoDiff4()
 void TestArray()
 {
     float data[30] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29};
-    int size = 30;
-    int rank = 3;
-    int dims[3] = {3, 2, 5};
-    int offsets[3] = {10, 5, 1};
+//    int size = 30;
+//    int rank = 3;
+//    int dims[3] = {3, 2, 5};
+//    int strides[3] = {10, 5, 1};
+//    int backstrides[3] = {20, 5, 4};
     
-    Iterator x;
-    x.m_size = size;
-    x.m_rank = rank;
-    x.m_dims = dims;
-    x.m_offsets = offsets;
-    x.m_ptr = data;
+    ArrayIterator<float> x(data, {3, 2, 5}, {10, 5, 1});
+//    x.m_size = size;
+//    x.m_rank = rank;
+//    x.m_dims = dims;
+//    x.m_strides = strides;
+//    x.m_backstrides = backstrides;
+//    x.m_begin = data;
+//    x.m_ptr = data;
+//    
+//    int counter[3] = {0, 0, 0};
+//    x.m_counter = counter;
     
-    x.m_pos = 0;
-    int counter[3] = {0, 0, 0};
-    x.m_counter = counter;
-    
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < x.m_size; i++)
     {
         std::cout << x.m_counter[0] << x.m_counter[1] << x.m_counter[2] << std::endl;
-        std::cout << i << " " << x.m_pos << " " << data[x.m_pos] << std::endl;
+        std::cout << i << " " << x.Dereference() << std::endl;
         x.Next();
     }
+    
+    ArrayShape shape({11, 3, 4, 8});
+    std::cout << std::endl;
+    for (int i = 0; i < shape.m_rank; i ++)
+        std::cout << shape.m_strides[i] << " ";
+    std::cout << std::endl;
 
 }
 

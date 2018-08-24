@@ -130,7 +130,10 @@ void TestArray3()
         t.Increment();
     }
     
-    Add<float> sum(t, t);
+    t.Reset();
+    
+    Add2<float, ArrayView<float>> sum(t, t);
     
     std::cout << sum.ConstReference() << std::endl;
+    
 }

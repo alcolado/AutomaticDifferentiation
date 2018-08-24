@@ -186,7 +186,7 @@ struct ArrayView : public ArrayBase<U, ArrayView<U>>
         return *m_ptr;
     }
     
-    U ConstReference() const
+    U ConstReferenceImplementation() const
     {
         return *m_ptr;
     }
@@ -256,6 +256,26 @@ struct Add : public ArrayBase<U, Add<U>>
         m_lhs(lhs),
         m_rhs(rhs),
         Base(lhs.m_shape)
+    {}
+    
+    U ConstReferenceImplementation() const
+    {
+        return m_lhs.ConstReference() + m_rhs.ConstReference();
+    }
+};
+
+template <typename U, typename Derived>
+struct Add2 : public ArrayBase<U, Add2<U, Derived>>
+{
+    typedef ArrayBase<U, Add2<U, Derived>> Base;
+    typedef ArrayBase<U, Derived> InputBase;
+    Derived m_lhs;
+    Derived m_rhs;
+    
+    Add2(const Derived& lhs, const Derived& rhs) :
+    m_lhs(lhs),
+    m_rhs(rhs),
+    Base(lhs.m_shape)
     {}
     
     U ConstReferenceImplementation() const

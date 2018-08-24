@@ -12,108 +12,228 @@
 #include <stdio.h>
 #include <vector>
 
-
-struct ArrayShape
+template <typename U, typename Derived>
+struct ArrayBase
 {
-    std::vector<int> m_dims; // dimension of each axis
-    std::vector<int> m_strides; // byte offset for increasing index of this axis
-    std::vector<int> m_counter; // current position in each axis
+    std::vector<int> m_shape;
+    std::vector<int> m_strides;
+    std::vector<int> m_backstrides;
+    std::vector<int> m_counter;
+    int m_rank;
+    size_t m_size;
     
-    int m_rank; // number of axes
-    size_t m_size; // size
-    std::vector<int> m_backstrides; // (n_dims[i]-1)*m_strides[i]
-    
-    ArrayShape(std::vector<int> dims, std::vector<int> strides) :
-        m_dims(dims),
+    ArrayBase(const std::vector<int>& shape, const std::vector<int>& strides) :
+        m_shape(shape),
         m_strides(strides),
-        m_counter(dims.size(), 0),
-        m_rank((int) dims.size())
+        m_counter(shape.size(), 0),
+        m_rank((int) shape.size())
     {
+        m_backstrides.resize(m_rank);
         m_size = 1;
-        for (int i = 0; i < m_rank; i++)
+        for (int i = 0; i < m_rank; ++i)
         {
-            m_size *= m_dims[i];
-            m_backstrides.push_back((m_dims[i]-1)*m_strides[i]);
+            m_backstrides[i] = (shape[i]-1)*m_strides[i];
+            m_size *= m_shape[i];
         }
     }
     
-    ArrayShape(std::vector<int> dims) :
-    m_dims(dims),
-    m_counter(dims.size(), 0),
-    m_rank((int) dims.size())
+    ArrayBase(const std::vector<int>& shape) :
+    m_shape(shape),
+    m_counter(shape.size(), 0),
+    m_rank((int) shape.size())
     {
         m_strides.resize(m_rank);
         m_backstrides.resize(m_rank);
         m_size = 1;
-        for (int i = m_rank - 1; i >= 0; i--)
+        for (int i = m_rank - 1; i >= 0; --i)
         {
             m_strides[i] = (int) m_size;
-            m_backstrides[i] = (m_dims[i]-1)*m_strides[i];
-            m_size *= m_dims[i];
+            m_backstrides[i] = (shape[i]-1)*m_strides[i];
+            m_size *= m_shape[i];
         }
     }
-
+    
+    ArrayBase<U, Derived>& Increment()
+    {
+        return static_cast<Derived*>(this)->Increment();
+    }
+    
+    ArrayBase<U, Derived>& Reset()
+    {
+        return static_cast<Derived*>(this)->Reset();
+    }
+    
+    U& Dereference() const
+    {
+        return static_cast<Derived*>(this)->Derefence();
+    }
+    
+    U& Element(std::vector<int> pos) const
+    {
+        return static_cast<Derived*>(this)->Element(pos);
+    }
+    
+    ArrayBase<U, Derived> Transpose(const std::vector<int>& perm) const
+    {
+        return static_cast<Derived*>(this)->Transpose(perm);
+    }
+    
+    ArrayBase<U, Derived> SelectRow(int i) const
+    {
+        return static_cast<Derived*>(this)->SelectRow(i);
+    }
 };
+
 
 template <typename U>
-struct ArrayIterator
+struct ArrayView : public ArrayBase<U, ArrayView<U>>
 {
-    U* m_ptr; // current iterator
-    U* m_begin; // initial ptr
-    std::vector<int> m_dims; // dimension of each axis
-    std::vector<int> m_strides; // byte offset for increasing index of this axis
-    std::vector<int> m_counter; // current position in each axis
-
-    int m_rank; // number of axes
-    size_t m_size; // size
-    std::vector<int> m_backstrides; // (n_dims[i]-1)*m_strides[i]
+    U* const m_begin;
+    U* m_ptr;
     
-    ArrayIterator() {}
+//    std::vector<int> m_shape;
+//    std::vector<int> m_strides;
+//    std::vector<int> m_backstrides;
+//    std::vector<int> m_counter;
+//    int m_rank;
+//    size_t m_size;
+//    
+//    ArrayView(U* begin, const std::vector<int>& shape, const std::vector<int>& strides) :
+//    m_begin(begin),
+//    m_ptr(begin),
+//    m_shape(shape),
+//    m_strides(strides),
+//    m_counter(shape.size(), 0),
+//    m_rank((int) shape.size())
+//    {
+//        m_backstrides.resize(m_rank);
+//        m_size = 1;
+//        for (int i = 0; i < m_rank; ++i)
+//        {
+//            m_backstrides[i] = (shape[i]-1)*m_strides[i];
+//            m_size *= m_shape[i];
+//        }
+//    }
+//    
+//    ArrayView(U* begin, const std::vector<int>& shape) :
+//    m_begin(begin),
+//    m_ptr(begin),
+//    m_shape(shape),
+//    m_counter(shape.size(), 0),
+//    m_rank((int) shape.size())
+//    {
+//        m_strides.resize(m_rank);
+//        m_backstrides.resize(m_rank);
+//        m_size = 1;
+//        for (int i = m_rank - 1; i >= 0; --i)
+//        {
+//            m_strides[i] = (int) m_size;
+//            m_backstrides[i] = (shape[i]-1)*m_strides[i];
+//            m_size *= m_shape[i];
+//        }
+//    }
     
-    ArrayIterator(U* ptr, std::vector<int> dims, std::vector<int> strides) :
-        m_ptr(ptr),
-        m_begin(ptr),
-        m_dims(dims),
-        m_strides(strides),
-        m_counter(dims.size(), 0)
+    typedef ArrayBase<U, ArrayView<U>> Base;
+    
+    ArrayView(U* begin, const std::vector<int>& shape, const std::vector<int>& strides) :
+        m_begin(begin),
+        m_ptr(begin),
+        Base(shape, strides)
+    {}
+    
+    ArrayView(U* begin, const std::vector<int>& shape) :
+    m_begin(begin),
+    m_ptr(begin),
+    Base(shape)
+    {}
+    
+    ArrayView<U>& Increment()
     {
-        m_rank = (int) dims.size();
-        m_size = 1;
-        for (int i = 0; i < m_rank; i++)
+        for (int axis = Base::m_rank - 1; axis >= 0; --axis)
         {
-            m_size *= m_dims[i];
-            m_backstrides.push_back((m_dims[i]-1)*m_strides[i]);
+            Base::m_counter[axis] += 1;
+            if (Base::m_counter[axis] >= Base::m_shape[axis])
+            {
+                m_ptr -= Base::m_backstrides[axis];
+                Base::m_counter[axis] = 0;
+            }
+            else
+            {
+                m_ptr += Base::m_strides[axis];
+                break;
+            }
         }
+        return *this;
     }
     
-    U Dereference() {return *m_ptr;}
-    
-    U* Begin() {return m_begin;}
-    
-    void Next()
+    ArrayView<U>& Reset()
     {
-        int axis = m_rank - 1;
-        while (axis >= 0)
+        for (int i = 0; i < Base::m_rank; i++)
         {
-            if (m_strides[axis] != 0)
-            {
-                m_counter[axis] += 1;
-                if (m_counter[axis] >= m_dims[axis])
-                {
-                    m_counter[axis] = 0;
-                    m_ptr -= m_backstrides[axis];
-                }
-                else
-                {
-                    m_ptr += m_strides[axis];
-                    return;
-                }
-            }
-            axis -= 1;
+            Base::m_counter[i] = 0;
         }
+        m_ptr = m_begin;
+        return *this;
+    }
+    
+    U& Dereference() const
+    {
+        return *m_ptr;
+    }
+    
+    U& Element(std::vector<int> pos) const
+    {
+        int offset = 0;
+        for (int i = 0; i < Base::m_rank; ++i)
+        {
+            offset += pos[i]*Base::m_strides[i];
+        }
+        return *(m_begin + offset);
+    }
+    
+    ArrayView<U>& TransposeInPlace(const std::vector<int>& perm)
+    {
+        std::vector<int> old_shape = Base::m_shape;
+        std::vector<int> old_strides = Base::m_strides;
+        std::vector<int> old_backstrides = Base::m_backstrides;
+        std::vector<int> old_counter = Base::m_counter;
+        for(int i = 0; i < Base::m_rank; ++i)
+        {
+            int j = perm[i];
+            Base::m_shape[i] = old_shape[j];
+            Base::m_strides[i] = old_strides[j];
+            Base::m_backstrides[i] = old_backstrides[j];
+            Base::m_counter[i] = old_counter[j];
+        }
+        return *this;
+    }
+    
+    ArrayView<U> Transpose(const std::vector<int>& perm) const
+    {
+        ArrayView<U> result = *this;
+        result.TransposeInPlace(perm);
+        return result;
+    }
+    
+    ArrayView<U> SelectRow(int i) const
+    {
+        std::vector<int> shape(Base::m_shape.begin()+1, Base::m_shape.end());
+        std::vector<int> strides(Base::m_strides.begin()+1, Base::m_strides.end());
+        return ArrayView<U>(m_begin + i*Base::m_strides[0], shape, strides);
+    }
+    
+    // data changing operations
+    ArrayView<U>& SetConst(const U& x)
+    {
+        Reset();
+        for (int i = 0; i < Base::m_size; i++)
+        {
+            Dereference() = x;
+            Increment();
+        }
+        return *this;
     }
 };
-
 
 
 

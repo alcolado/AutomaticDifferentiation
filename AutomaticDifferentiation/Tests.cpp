@@ -107,41 +107,26 @@ void TestAutoDiff4()
 }
 
 
-void TestArray()
+void TestArray3()
 {
-    float data[30] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29};
-//    int size = 30;
-//    int rank = 3;
-//    int dims[3] = {3, 2, 5};
-//    int strides[3] = {10, 5, 1};
-//    int backstrides[3] = {20, 5, 4};
+    // create array
+    float x[30];
+    ArrayView<float> t(&x[0], {2,5,3});
     
-    ArrayIterator<float> x(data, {3, 2, 5}, {10, 5, 1});
-//    x.m_size = size;
-//    x.m_rank = rank;
-//    x.m_dims = dims;
-//    x.m_strides = strides;
-//    x.m_backstrides = backstrides;
-//    x.m_begin = data;
-//    x.m_ptr = data;
-//    
-//    int counter[3] = {0, 0, 0};
-//    x.m_counter = counter;
-    
-    for (int i = 0; i < x.m_size; i++)
+    // set elements
+    for (int i = 0; i < t.m_size; i ++)
     {
-        std::cout << x.m_counter[0] << x.m_counter[1] << x.m_counter[2] << std::endl;
-        std::cout << i << " " << x.Dereference() << std::endl;
-        x.Next();
+        t.Dereference() = i;
+        t.Increment();
     }
+    t.SelectRow(1).SetConst(2.3);
     
-    ArrayShape shape({11, 3, 4, 8});
-    std::cout << std::endl;
-    for (int i = 0; i < shape.m_rank; i ++)
-        std::cout << shape.m_strides[i] << " ";
-    std::cout << std::endl;
-
+    t.Element({1,1,1}) = 987;
+    
+    // show result
+    for (int i = 0; i < t.m_size; i ++)
+    {
+        std::cout << i << " " << t.Dereference() << std::endl;
+        t.Increment();
+    }    
 }
-
-
-

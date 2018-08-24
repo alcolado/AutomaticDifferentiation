@@ -11,7 +11,7 @@ int main(int argc, const char * argv[])
     //TestAutoDiff3();
     //TestAutoDiff4();
     
-    TestArray();
+    TestArray3();
         
 }
 

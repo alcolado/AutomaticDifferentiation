@@ -9,6 +9,5 @@ void TestAutoDiff1();
 void TestAutoDiff2();
 void TestAutoDiff3();
 void TestAutoDiff4();
-void TestArray();
-
+void TestArray3();
 #endif

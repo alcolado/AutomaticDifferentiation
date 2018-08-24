@@ -116,7 +116,7 @@ void TestArray3()
     // set elements
     for (int i = 0; i < t.m_size; i ++)
     {
-        t.Dereference() = i;
+        t.Dereference() = i+5;
         t.Increment();
     }
     t.SelectRow(1).SetConst(2.3);
@@ -128,5 +128,9 @@ void TestArray3()
     {
         std::cout << i << " " << t.Dereference() << std::endl;
         t.Increment();
-    }    
+    }
+    
+    Add<float> sum(t, t);
+    
+    std::cout << sum.ConstReference();
 }

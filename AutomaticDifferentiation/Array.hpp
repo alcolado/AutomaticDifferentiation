@@ -68,6 +68,11 @@ struct ArrayBase
         return static_cast<Derived*>(this)->Derefence();
     }
     
+    U ConstReference() const
+    {
+        return static_cast<Derived*>(this)->ConstRefence();
+    }
+    
     U& Element(std::vector<int> pos) const
     {
         return static_cast<Derived*>(this)->Element(pos);
@@ -181,6 +186,11 @@ struct ArrayView : public ArrayBase<U, ArrayView<U>>
         return *m_ptr;
     }
     
+    U ConstReference() const
+    {
+        return *m_ptr;
+    }
+    
     U& Element(std::vector<int> pos) const
     {
         int offset = 0;
@@ -235,6 +245,24 @@ struct ArrayView : public ArrayBase<U, ArrayView<U>>
     }
 };
 
+template <typename U>
+struct Add : public ArrayBase<U, Add<U>>
+{
+    typedef ArrayBase<U, Add<U>> Base;
+    ArrayView<U> m_lhs;
+    ArrayView<U> m_rhs;
+    
+    Add(const ArrayView<U>& lhs, const ArrayView<U>& rhs) :
+        m_lhs(lhs),
+        m_rhs(rhs),
+        Base(lhs.m_shape)
+    {}
+    
+    U ConstReference()
+    {
+        return m_lhs.Dereference() + m_rhs.Dereference();
+    }
+};
 
 
 #endif /* Array_hpp */

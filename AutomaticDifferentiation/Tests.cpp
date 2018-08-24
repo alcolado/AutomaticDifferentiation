@@ -132,5 +132,5 @@ void TestArray3()
     
     Add<float> sum(t, t);
     
-    std::cout << sum.ConstReference();
+    std::cout << sum.ConstReference() << std::endl;
 }

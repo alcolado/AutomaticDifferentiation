@@ -65,12 +65,12 @@ struct ArrayBase
     
     U& Dereference() const
     {
-        return static_cast<Derived*>(this)->Derefence();
+        return static_cast<const Derived*>(this)->DereferenceImplementation();
     }
     
     U ConstReference() const
     {
-        return static_cast<Derived*>(this)->ConstRefence();
+        return static_cast<const Derived*>(this)->ConstReferenceImplementation();
     }
     
     U& Element(std::vector<int> pos) const
@@ -181,7 +181,7 @@ struct ArrayView : public ArrayBase<U, ArrayView<U>>
         return *this;
     }
     
-    U& Dereference() const
+    U& DereferenceImplementation() const
     {
         return *m_ptr;
     }
@@ -238,7 +238,7 @@ struct ArrayView : public ArrayBase<U, ArrayView<U>>
         Reset();
         for (int i = 0; i < Base::m_size; i++)
         {
-            Dereference() = x;
+            DereferenceImplementation() = x;
             Increment();
         }
         return *this;
@@ -258,9 +258,9 @@ struct Add : public ArrayBase<U, Add<U>>
         Base(lhs.m_shape)
     {}
     
-    U ConstReference()
+    U ConstReferenceImplementation() const
     {
-        return m_lhs.Dereference() + m_rhs.Dereference();
+        return m_lhs.ConstReference() + m_rhs.ConstReference();
     }
 };
 

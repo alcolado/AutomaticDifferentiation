@@ -10,6 +10,7 @@
 #define Array_hpp
 
 #include <stdio.h>
+#include <iostream>
 #include <vector>
 
 template <typename U, typename Derived>
@@ -89,56 +90,25 @@ struct ArrayBase
     }
 };
 
+template <typename U, typename Derived>
+std::ostream& operator<<(std::ostream& os, ArrayBase<U, Derived>& a)
+{
+    os << "printing array!" << std::endl;
+    for (int i = 0; i < a.m_size; ++i)
+    {
+        std::cout << a.ConstReference();
+        a.Increment();
+    }
+    return os;
+}
+
 
 template <typename U>
 struct ArrayView : public ArrayBase<U, ArrayView<U>>
 {
+    typedef ArrayBase<U, ArrayView<U>> Base;
     U* const m_begin;
     U* m_ptr;
-    
-//    std::vector<int> m_shape;
-//    std::vector<int> m_strides;
-//    std::vector<int> m_backstrides;
-//    std::vector<int> m_counter;
-//    int m_rank;
-//    size_t m_size;
-//    
-//    ArrayView(U* begin, const std::vector<int>& shape, const std::vector<int>& strides) :
-//    m_begin(begin),
-//    m_ptr(begin),
-//    m_shape(shape),
-//    m_strides(strides),
-//    m_counter(shape.size(), 0),
-//    m_rank((int) shape.size())
-//    {
-//        m_backstrides.resize(m_rank);
-//        m_size = 1;
-//        for (int i = 0; i < m_rank; ++i)
-//        {
-//            m_backstrides[i] = (shape[i]-1)*m_strides[i];
-//            m_size *= m_shape[i];
-//        }
-//    }
-//    
-//    ArrayView(U* begin, const std::vector<int>& shape) :
-//    m_begin(begin),
-//    m_ptr(begin),
-//    m_shape(shape),
-//    m_counter(shape.size(), 0),
-//    m_rank((int) shape.size())
-//    {
-//        m_strides.resize(m_rank);
-//        m_backstrides.resize(m_rank);
-//        m_size = 1;
-//        for (int i = m_rank - 1; i >= 0; --i)
-//        {
-//            m_strides[i] = (int) m_size;
-//            m_backstrides[i] = (shape[i]-1)*m_strides[i];
-//            m_size *= m_shape[i];
-//        }
-//    }
-    
-    typedef ArrayBase<U, ArrayView<U>> Base;
     
     ArrayView(U* begin, const std::vector<int>& shape, const std::vector<int>& strides) :
         m_begin(begin),
@@ -245,42 +215,41 @@ struct ArrayView : public ArrayBase<U, ArrayView<U>>
     }
 };
 
-template <typename U>
-struct Add : public ArrayBase<U, Add<U>>
+template <typename ULhs, typename DerivedLhs, typename URhs, typename DerivedRhs>
+struct AddArrayArray : public ArrayBase<ULhs, AddArrayArray<ULhs, DerivedLhs, URhs, DerivedRhs>>
 {
-    typedef ArrayBase<U, Add<U>> Base;
-    ArrayView<U> m_lhs;
-    ArrayView<U> m_rhs;
+    typedef ArrayBase<ULhs, AddArrayArray<ULhs, DerivedLhs, URhs, DerivedRhs>> Base;
+    DerivedLhs m_lhs;
+    DerivedRhs m_rhs;
     
-    Add(const ArrayView<U>& lhs, const ArrayView<U>& rhs) :
-        m_lhs(lhs),
-        m_rhs(rhs),
-        Base(lhs.m_shape)
-    {}
-    
-    U ConstReferenceImplementation() const
-    {
-        return m_lhs.ConstReference() + m_rhs.ConstReference();
-    }
-};
-
-template <typename U, typename Derived>
-struct Add2 : public ArrayBase<U, Add2<U, Derived>>
-{
-    typedef ArrayBase<U, Add2<U, Derived>> Base;
-    typedef ArrayBase<U, Derived> InputBase;
-    Derived m_lhs;
-    Derived m_rhs;
-    
-    Add2(const Derived& lhs, const Derived& rhs) :
+    AddArrayArray(const DerivedLhs& lhs, const DerivedRhs& rhs) :
     m_lhs(lhs),
     m_rhs(rhs),
     Base(lhs.m_shape)
     {}
     
-    U ConstReferenceImplementation() const
+    ULhs ConstReferenceImplementation() const
     {
         return m_lhs.ConstReference() + m_rhs.ConstReference();
+    }
+};
+
+template <typename ULhs, typename DerivedLhs, typename URhs>
+struct AddArrayScalar : public ArrayBase<ULhs, AddArrayScalar<ULhs, DerivedLhs, URhs>>
+{
+    typedef ArrayBase<ULhs, AddArrayScalar<ULhs, DerivedLhs, URhs>> Base;
+    DerivedLhs m_lhs;
+    URhs m_rhs;
+    
+    AddArrayScalar(const DerivedLhs& lhs, const URhs& rhs) :
+    m_lhs(lhs),
+    m_rhs(rhs),
+    Base(lhs.m_shape)
+    {}
+    
+    ULhs ConstReferenceImplementation() const
+    {
+        return m_lhs.ConstReference() + m_rhs;
     }
 };
 

@@ -132,8 +132,9 @@ void TestArray3()
     
     t.Reset();
     
-    Add2<float, ArrayView<float>> sum(t, t);
+    AddArrayArray<float, ArrayView<float>, float, ArrayView<float>> sum(t, t);
     
     std::cout << sum.ConstReference() << std::endl;
     
+    std::cout << t;
 }

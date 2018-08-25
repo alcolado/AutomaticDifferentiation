@@ -94,10 +94,21 @@ template <typename U, typename Derived>
 std::ostream& operator<<(std::ostream& os, ArrayBase<U, Derived>& a)
 {
     os << "printing array!" << std::endl;
+    a.Reset();
     for (int i = 0; i < a.m_size; ++i)
     {
-        std::cout << a.ConstReference();
+        os << a.ConstReference() << " ";
+        std::vector<int> prev_counter = a.m_counter;
         a.Increment();
+        
+        for (int j = 0; j < a.m_rank - 1; ++j)
+        {
+            if (prev_counter[j] < a.m_counter[j])
+            {
+                for (int k = 0; k < a.m_rank - j - 1; ++k)
+                    os << std::endl;
+            }
+        }
     }
     return os;
 }
